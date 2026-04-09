@@ -6,46 +6,40 @@ on:
       - main
 
 jobs:
-  build-and-run:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
+      # Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup Python
-      - name: Set up Python
+      # Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      # 3. Install dependencies
+      # Install dependencies
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      # 4. Check Python file for syntax errors
-      - name: Run basic test
-        run: |
-          python -m py_compile app.py
+      # Check Python syntax
+      - name: Check Python file
+        run: python -m py_compile app.py
 
-      # 5. Build Docker image
-      - name: Build Docker Image
-        run: |
-          docker build -t flask-app .
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t flask-app .
 
-      # 6. Run Docker container
-      - name: Run Docker Container
-        run: |
-          docker run -d -p 5000:5000 flask-app
+      # Run Docker container
+      - name: Run container
+        run: docker run -d -p 5000:5000 flask-app
 
-      # 7. Wait for container to start
-      - name: Wait for container
-        run: |
-          sleep 10
+      # Wait for container
+      - name: Wait for container startup
+        run: sleep 15
 
-      # 8. Test API
+      # Test API
       - name: Test API
-        run: |
-          curl http://localhost:5000/
+        run: curl http://localhost:5000
