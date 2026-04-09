@@ -10,38 +10,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Get code
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # 1. Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 2. Set up Python
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      # 2. Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    # 3. Install dependencies
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    # 4. Run basic test
-    - name: Run app test
-      run: |
-        python -m py_compile app.py
+      # 4. Check Python file for syntax errors
+      - name: Run basic test
+        run: |
+          python -m py_compile app.py
 
-    # 5. Build Docker Image
-    - name: Build Docker Image
-      run: |
-        docker build -t flask-app .
+      # 5. Build Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t flask-app .
 
-    # 6. Run Docker Container
-    - name: Run Docker Container
-      run: |
-        docker run -d -p 5000:5000 flask-app
+      # 6. Run Docker container
+      - name: Run Docker Container
+        run: |
+          docker run -d -p 5000:5000 flask-app
 
-    # 7. Check if app is running
-    - name: Test API
-      run: |
-        sleep 5
-        curl http://localhost:5000/
+      # 7. Wait for container to start
+      - name: Wait for container
+        run: |
+          sleep 10
+
+      # 8. Test API
+      - name: Test API
+        run: |
+          curl http://localhost:5000/
